@@ -1,0 +1,192 @@
+/* Milo the cat. Cute cursor-following guide. */
+
+.milo {
+  --s: 84px;
+  position: fixed; left: 0; top: 0; z-index: 9999;
+  width: var(--s); height: var(--s);
+  pointer-events: none;
+  will-change: transform;
+}
+.milo[hidden] { display: none; }
+
+.milo-cat {
+  position: absolute; inset: 0; padding: 0; margin: 0;
+  background: none; border: 0; cursor: pointer; pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+}
+.milo-cat:focus-visible { outline: 3px dashed var(--c-pink); outline-offset: 4px; border-radius: 50%; }
+
+.milo-svg {
+  width: 100%; height: 100%; overflow: visible;
+  rotate: var(--tilt, 0deg); transform-origin: 50% 90%;
+  filter: drop-shadow(0 3px 0 rgba(38, 32, 58, 0.12));
+  transition: scale 0.18s cubic-bezier(.3,1.8,.5,1);
+}
+.milo-cat:hover .milo-svg { scale: 1.08; }
+
+/* ---------- cat drawing ---------- */
+.m-shadow { fill: rgba(38, 32, 58, 0.18); }
+.m-fur { fill: #ffb35c; stroke: #26203a; stroke-width: 2.5; stroke-linejoin: round; }
+.m-belly { fill: #fff0da; }
+.m-inner { fill: #ff9db8; }
+.m-stripe { stroke: #e07b1f; stroke-width: 3; stroke-linecap: round; fill: none; }
+.m-eye { fill: #26203a; }
+.m-hl { fill: #fff; }
+.m-nose { fill: #ff7aa2; }
+.m-line { stroke: #26203a; stroke-width: 2.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.m-blush { fill: #ff8fa8; opacity: 0.6; }
+.m-collar { stroke: #26203a; stroke-width: 9; fill: none; stroke-linecap: round; }
+.m-collar-in { stroke: #4aa3ff; stroke-width: 5; fill: none; stroke-linecap: round; }
+.m-bell { fill: #ffc531; stroke: #26203a; stroke-width: 2; }
+.m-tail-out { stroke: #26203a; stroke-width: 13; fill: none; stroke-linecap: round; }
+.m-tail-in { stroke: #ffb35c; stroke-width: 8; fill: none; stroke-linecap: round; }
+.m-tongue { fill: #ff7aa2; stroke: #26203a; stroke-width: 2; stroke-linejoin: round; }
+
+.m-tail { transform-origin: 92px 96px; animation: mTail 1.7s ease-in-out infinite; }
+@keyframes mTail { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(14deg); } }
+
+.m-head { transform-origin: 60px 78px; animation: mHead 5s ease-in-out infinite; }
+@keyframes mHead { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }
+
+.m-eye-g { transform-box: fill-box; transform-origin: center; animation: mBlink 4.6s infinite; }
+@keyframes mBlink { 0%, 91%, 100% { transform: scaleY(1); } 94% { transform: scaleY(0.08); } }
+
+.m-happy, .m-sleep, .m-mouth-open { display: none; }
+.milo-cat:hover .m-open, .milo.happy .m-open { display: none; }
+.milo-cat:hover .m-happy, .milo.happy .m-happy { display: inline; }
+.milo.happy .m-mouth { display: none; }
+.milo.happy .m-mouth-open { display: inline; }
+.milo.sleeping .m-open, .milo.sleeping .m-happy { display: none; }
+.milo.sleeping .m-sleep { display: inline; }
+.milo.sleeping .m-tail { animation-duration: 4s; }
+.milo.sleeping .m-head { animation: none; transform: rotate(7deg); }
+
+/* walking */
+.milo.walking .m-body { animation: mBob 0.28s ease-in-out infinite; }
+.milo.walking .m-head { animation: mBob2 0.28s ease-in-out infinite; }
+.milo.walking .m-pl { animation: mStep 0.28s ease-in-out infinite; }
+.milo.walking .m-pr { animation: mStep 0.28s ease-in-out infinite reverse; }
+.milo.walking .m-tail { animation-duration: 0.5s; }
+@keyframes mBob { 50% { transform: translateY(-3px); } }
+@keyframes mBob2 { 50% { transform: translateY(-4px) rotate(2deg); } }
+@keyframes mStep { 50% { transform: translateY(-6px); } }
+
+/* jump and wake */
+.milo.jump .milo-svg { animation: mJump 0.6s cubic-bezier(.3,1.4,.5,1); }
+@keyframes mJump {
+  0% { transform: translateY(0) scale(1, 1); }
+  25% { transform: translateY(0) scale(1.12, 0.86); }
+  55% { transform: translateY(-26px) scale(0.94, 1.1); }
+  80% { transform: translateY(0) scale(1.1, 0.9); }
+  100% { transform: translateY(0) scale(1, 1); }
+}
+
+/* zzz */
+.milo-zzz {
+  position: absolute; top: -4px; right: -6px; display: none;
+  font-family: var(--hand, cursive); font-weight: 700; font-size: 1.5rem; color: var(--c-sky);
+  pointer-events: none;
+}
+.milo.sleeping .milo-zzz { display: block; animation: mZzz 2.4s ease-in-out infinite; }
+@keyframes mZzz { 0% { opacity: 0; transform: translate(0, 8px) scale(0.7); } 40% { opacity: 1; } 100% { opacity: 0; transform: translate(10px, -16px) scale(1.15); } }
+
+/* hearts */
+.milo-fx { position: absolute; inset: 0; pointer-events: none; }
+.milo-heart { position: absolute; left: 50%; top: 10%; font-size: 1.3rem; animation: mHeart 1.2s ease-out forwards; }
+.milo-heart:nth-child(1) { color: var(--c-pink); --dx: -26px; }
+.milo-heart:nth-child(2) { color: var(--c-red); --dx: 2px; animation-delay: 0.08s; }
+.milo-heart:nth-child(3) { color: var(--c-lilac); --dx: 28px; animation-delay: 0.16s; }
+@keyframes mHeart { 0% { opacity: 0; transform: translate(0, 6px) scale(0.4); } 25% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--dx), -56px) scale(1.2) rotate(14deg); } }
+
+/* ---------- speech bubble ---------- */
+.milo-bubble {
+  --bx: 0px; --px: 50%;
+  position: absolute; bottom: calc(100% + 8px); left: var(--bx);
+  display: none; box-sizing: border-box;
+  width: min(17rem, calc(100vw - 16px));
+  padding: 0.75rem 1rem 0.85rem;
+  color: #26203a; background: var(--bt, #ffe39a);
+  border: 2.5px solid #26203a; border-radius: 22px 26px 24px 18px / 24px 20px 26px 22px;
+  box-shadow: 4px 4px 0 #26203a;
+  font-family: var(--display, sans-serif); font-size: 1rem; line-height: 1.3; font-weight: 600;
+  pointer-events: auto; transform-origin: var(--px) 100%;
+}
+.milo-bubble.is-open { display: block; animation: mPop 0.38s cubic-bezier(.3,1.7,.5,1); }
+@keyframes mPop { from { opacity: 0; transform: scale(0.5) rotate(-4deg); } }
+.milo-bubble::after {
+  content: ""; position: absolute; left: var(--px); bottom: -11px;
+  width: 16px; height: 16px; margin-left: -8px;
+  background: var(--bt, #ffe39a);
+  border-right: 2.5px solid #26203a; border-bottom: 2.5px solid #26203a;
+  transform: rotate(45deg) skew(8deg, 8deg); border-radius: 0 0 6px 0;
+}
+.milo.below .milo-bubble { bottom: auto; top: calc(100% + 8px); transform-origin: var(--px) 0; }
+.milo.below .milo-bubble::after { bottom: auto; top: -11px; transform: rotate(225deg) skew(8deg, 8deg); }
+
+.milo-bubble[data-tone="sun"] { --bt: #ffe39a; }
+.milo-bubble[data-tone="mint"] { --bt: #a8efd3; }
+.milo-bubble[data-tone="sky"] { --bt: #b7dbff; }
+.milo-bubble[data-tone="pink"] { --bt: #ffc5de; }
+.milo-bubble[data-tone="lilac"] { --bt: #d9c6ff; }
+.milo-bubble[data-tone="red"] { --bt: #ffc0b8; }
+
+.milo-body { display: block; padding-right: 0.9rem; min-height: 1.3em; }
+a.milo-body { text-decoration: none; color: inherit; cursor: pointer; }
+a.milo-body .milo-go {
+  display: inline-block; margin-left: 0.25em; font-weight: 700;
+  animation: mNudge 1.1s ease-in-out infinite;
+}
+a.milo-body:hover { text-decoration: underline wavy; text-decoration-thickness: 1.5px; text-underline-offset: 0.2em; }
+a.milo-body:focus-visible, .milo-chip:focus-visible, .milo-x:focus-visible { outline: 3px dashed #26203a; outline-offset: 2px; }
+@keyframes mNudge { 50% { transform: translateX(5px); } }
+
+.milo-x {
+  position: absolute; top: 4px; right: 6px; width: 1.5rem; height: 1.5rem; padding: 0;
+  display: grid; place-items: center;
+  background: transparent; color: #26203a; border: 0; border-radius: 50%;
+  font: 700 1.2rem/1 var(--display, sans-serif); cursor: pointer;
+}
+.milo-x:hover { background: rgba(38, 32, 58, 0.15); }
+
+.milo-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.6rem; }
+.milo-chips:empty { display: none; }
+.milo-chip {
+  --ct: #fff;
+  display: inline-flex; align-items: center; gap: 0.3em;
+  padding: 0.22rem 0.75rem; background: var(--ct); color: #26203a;
+  border: 2px solid #26203a; border-radius: 999px;
+  font: 600 0.92rem/1.3 var(--display, sans-serif); text-decoration: none; cursor: pointer;
+  animation: mChip 0.35s cubic-bezier(.3,1.8,.5,1) both;
+  transition: transform 0.12s, box-shadow 0.12s;
+  box-shadow: 2px 2px 0 #26203a;
+}
+.milo-chip:nth-child(2) { animation-delay: 0.05s; }
+.milo-chip:nth-child(3) { animation-delay: 0.1s; }
+.milo-chip:nth-child(4) { animation-delay: 0.15s; }
+.milo-chip:nth-child(5) { animation-delay: 0.2s; }
+.milo-chip:nth-child(6) { animation-delay: 0.25s; }
+.milo-chip:nth-child(7) { animation-delay: 0.3s; }
+@keyframes mChip { from { opacity: 0; transform: scale(0.4) translateY(8px); } }
+.milo-chip:hover { transform: translate(-1px, -2px) rotate(-2deg); box-shadow: 3px 4px 0 #26203a; }
+.milo-chip:active { transform: translate(2px, 2px); box-shadow: 0 0 0 #26203a; }
+.milo-chip[data-tone="sun"] { --ct: #ffc531; }
+.milo-chip[data-tone="mint"] { --ct: #2fc79a; }
+.milo-chip[data-tone="sky"] { --ct: #7bbcff; }
+.milo-chip[data-tone="pink"] { --ct: #ff9fcb; }
+.milo-chip[data-tone="lilac"] { --ct: #bfa2ff; }
+.milo-chip[data-tone="white"] { --ct: #fffdf8; }
+.milo-chip.is-here { border-style: dashed; box-shadow: none; opacity: 0.8; }
+.milo-chip.is-quiet { font-weight: 500; font-size: 0.82rem; box-shadow: none; }
+
+/* section Milo is pointing at */
+.milo-spot {
+  outline: 3px dashed var(--c-pink); outline-offset: 12px; border-radius: 14px;
+  animation: mSpot 1.4s ease-in-out 2;
+}
+@keyframes mSpot { 50% { outline-color: var(--c-sky); outline-offset: 16px; } }
+
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .milo *, .milo-spot { animation: none !important; transition: none !important; }
+}
